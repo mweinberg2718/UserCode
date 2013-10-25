@@ -1,0 +1,24 @@
+universe              = vanilla
+Executable            = CWD/Analyze_Filelist
+Requirements          = Memory >= 199 && OpSys == "LINUX" && Arch != "DUMMY" && Disk > 1000000
+Should_Transfer_Files = YES
+WhenToTransferOutput  = ON_EXIT
+Transfer_Input_Files  = CWD/JOBDIR/FILELIST, \ 
+CWD/../jec/Jec12_V1_AK5PF_Uncertainty.txt, \ 
+CWD/../jec/Jec12_V1_AK5Calo_Uncertainty.txt
+# Transfer json files if needed:
+# CWD/Cert_190456-196531_8TeV_13Jul2012ReReco_Collisions12_v2.txt, \
+# CWD/Cert_190456-208686_8TeV_PromptReco_Collisions12.txt, \
+# CWD/Cert_190782-190949_8TeV_06Aug2012ReReco_Collisions12.txt, \
+# CWD/Cert_198022-198523_8TeV_24Aug2012ReReco_Collisions12.txt, \
+# CWD/Cert_201191-201191_8TeV_11Dec2012ReReco-recover_Collisions12.txt
+# Do not specify path for output:
+Output                = job_FILE_$(Cluster)_$(Process).stdout
+Error                 = job_FILE_$(Cluster)_$(Process).stderr
+Log                   = job_FILE_$(Cluster)_$(Process).log
+notify_user           = weinberg@FNAL.GOV
+notification          = never
+getenv                = True
+Transfer_executable   = True
+Arguments             = "FILELIST JSON JOBID DATASET LUMI XSEC JEC"
+Queue 1
