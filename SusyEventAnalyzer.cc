@@ -158,32 +158,32 @@ photonEffectiveAreas(Float_t _eta, Float_t* _effA)
 Float_t
 SusyEventAnalyzer::SetStealthGGXSec(Float_t mSquark)
 {
-  if      (mSquark ==  200.0) return 39900.0;
-  else if (mSquark ==  250.0) return 11900.0;
-  else if (mSquark ==  300.0) return  4180.0;
-  else if (mSquark ==  350.0) return  1670.0;
-  else if (mSquark ==  400.0) return   731.0;
-  else if (mSquark ==  450.0) return   342.0;
-  else if (mSquark ==  500.0) return   169.0;
-  else if (mSquark ==  550.0) return    87.7;
-  else if (mSquark ==  600.0) return    47.1;
-  else if (mSquark ==  650.0) return    26.0;
-  else if (mSquark ==  700.0) return    14.7;
-  else if (mSquark ==  750.0) return     8.52;
-  else if (mSquark ==  800.0) return     5.02;
-  else if (mSquark ==  850.0) return     3.00;
-  else if (mSquark ==  900.0) return     1.82;
-  else if (mSquark ==  950.0) return     1.12;
-  else if (mSquark == 1000.0) return     0.692;
-  else if (mSquark == 1050.0) return     0.431;
-  else if (mSquark == 1100.0) return     0.272;
-  else if (mSquark == 1150.0) return     0.172;
-  else if (mSquark == 1200.0) return     0.109;
-  else if (mSquark == 1250.0) return     0.0699;
-  else if (mSquark == 1300.0) return     0.045;
-  else if (mSquark == 1350.0) return     0.029;
-  else if (mSquark == 1400.0) return     0.0188;
-  else                        return    -1.0;
+  if      (mSquark ==  200.0) return 183390.0;
+  else if (mSquark ==  250.0) return  55865.5;
+  else if (mSquark ==  300.0) return  19828.3;
+  else if (mSquark ==  350.0) return   7982.94;
+  else if (mSquark ==  400.0) return   3543.38;
+  else if (mSquark ==  450.0) return   1679.47;
+  else if (mSquark ==  500.0) return    847.051;
+  else if (mSquark ==  550.0) return    447.055;
+  else if (mSquark ==  600.0) return    244.862;
+  else if (mSquark ==  650.0) return    137.949;
+  else if (mSquark ==  700.0) return     79.9667;
+  else if (mSquark ==  750.0) return     47.3374;
+  else if (mSquark ==  800.0) return     28.4146;
+  else if (mSquark ==  850.0) return     17.2924;
+  else if (mSquark ==  900.0) return     10.6744;
+  else if (mSquark ==  950.0) return      6.68877;
+  else if (mSquark == 1000.0) return      4.24173;
+  else if (mSquark == 1050.0) return      2.71284;
+  else if (mSquark == 1100.0) return      1.7516;
+  else if (mSquark == 1150.0) return      1.13551;
+  else if (mSquark == 1200.0) return      0.739516;
+  else if (mSquark == 1250.0) return      0.484981;
+  else if (mSquark == 1300.0) return      0.319675;
+  else if (mSquark == 1350.0) return      0.212278;
+  else if (mSquark == 1400.0) return      0.14128;
+  else                        return     -1.0;
 }
 
 
