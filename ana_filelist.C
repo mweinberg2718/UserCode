@@ -1,7 +1,7 @@
 // Original Author:  Dongwook Jang
 // $Id: ana.C,v 1.1 2013/06/21 19:39:12 weinberg Exp $
 
-void ana(TString outputName="stealthAnalysis"){
+void ana_filelist(TString outputName="stealthAnalysis"){
 
   // REMOVE THE LINE BELOW IF NOT RUNNING IN CMSSW ENVIRONMENT
   gSystem->Load("libCondFormatsJetMETObjects.so");
@@ -16,10 +16,7 @@ void ana(TString outputName="stealthAnalysis"){
   // chain of inputs
   TChain chain("susyTree");
 //   chain.Add("susyEvents.root");
-  chain.Add("dcap:///pnfs/cms/WAX/11/store/user/lpcsusystealth/ntuples/stealthT2_gg/susyEvents_165_1_LBp.root");
-//   chain.Add("dcap:///pnfs/cms/WAX/11/store/user/lpcsusystealth/ntuples/stealthT2_gg/susyEvents_251_1_Ddx.root");
-//   chain.Add("dcap:///pnfs/cms/WAX/11/store/user/lpcsusystealth/ntuples/stealthT2_gg/susyEvents_213_2_UUV.root");
-//   chain.Add("dcap:///pnfs/cms/WAX/11/store/user/lpcsusystealth/ntuples/stealthT2_gg/susyEvents_319_1_UgR.root");
+//   chain.Add("dcap:///pnfs/cms/WAX/11/store/user/lpcsusystealth/ntuples/stealthT2_gg/susyEvents_165_1_LBp.root");
 
   // Disabling unused branches will speed up the processing significantly, but risks inconsistencies if wrong trees are turned off.
   // Make sure you know what you are doing.

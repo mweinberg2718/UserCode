@@ -156,7 +156,7 @@ photonEffectiveAreas(Float_t _eta, Float_t* _effA)
 
 
 Float_t
-SusyEventAnalyzer::SetStealthGGXSec(Float_t mSquark)
+SusyEventAnalyzer::SetSusyXSec(Float_t mSquark)
 {
   if      (mSquark ==  200.0) return 183390.0;
   else if (mSquark ==  250.0) return  55865.5;
@@ -191,10 +191,14 @@ SusyEventAnalyzer::SetStealthGGXSec(Float_t mSquark)
 Float_t
 SusyEventAnalyzer::SetSignalEventWeight(TString dsName, Float_t lumi, Float_t m)
 {
-  if (dsName == "stealthT2_gg")
-    return lumi * SetStealthGGXSec(m) / 20000.0;
-  else
-    return -1.0;
+  if (dsName.Contains("stealthT2")) {
+    if (dsName.Contains("WW"))
+      return lumi * SetSusyXSec(m) * 1.0 / 20000.0;
+
+    return lumi * SetSusyXSec(m) / 20000.0;
+  }
+
+  return 1.0;
 }
 
 
@@ -463,7 +467,7 @@ SusyEventAnalyzer::Run()
 
         if (!muon.isPFMuon())                              continue;
         if (!muon.isTrackerMuon() && !muon.isGlobalMuon()) continue;
-        if (muon.momentum.Pt() < muon_ptCut)               continue;
+        if (muon.momentum.Pt() < muon2_ptCut)              continue;
 
         Float_t effA          = muonEffectiveAreas(fabs(muon.momentum.Eta()));
         Float_t pfCombinedIso = (muon.sumChargedHadronPt04 + std::max(double (muon.sumNeutralHadronEt04 +
@@ -505,6 +509,10 @@ SusyEventAnalyzer::Run()
       std::sort(looseMuons.begin(), looseMuons.end(), PtGreater<susy::Muon>);
       std::sort(tightMuons.begin(), tightMuons.end(), PtGreater<susy::Muon>);
 
+      // Leading muon must pass higher pT cut
+      if (looseMuons.size() >= 1 && looseMuons.at(0)->momentum.Pt() < muon1_ptCut) looseMuons.clear();
+      if (tightMuons.size() >= 1 && tightMuons.at(0)->momentum.Pt() < muon1_ptCut) tightMuons.clear();
+
       // Extra cleaning for loose muons: Same sign muons should have DeltaR > 0.02 to avoid split tracks
       if (looseMuons.size() >= 2) {
         for (size_t i = 0; i < looseMuons.size() - 1; i++) {
@@ -538,14 +546,14 @@ SusyEventAnalyzer::Run()
 
         Float_t dInvEInvP = 1.0 / electron.ecalEnergy * (1.0 - electron.eSuperClusterOverP);
 
-        if (sameAsTightMuon)                          continue;
-        if (electron.momentum.Et()  < electron_etCut) continue;
-        if (!electron.isEB())                         continue;
-        if (electron.sigmaIetaIeta  >  0.01)          continue;
-        if (electron.hcalOverEcalBc >  0.12)          continue;
-        if (electron.gsfTrack       == 0)             continue;
-        if (fabs(dInvEInvP)         >  0.05)          continue;
-        if (!electron.passConversionVeto)             continue;
+        if (sameAsTightMuon)                           continue;
+        if (electron.momentum.Et()  < electron2_etCut) continue;
+        if (!electron.isEB())                          continue;
+        if (electron.sigmaIetaIeta  >  0.01)           continue;
+        if (electron.hcalOverEcalBc >  0.12)           continue;
+        if (electron.gsfTrack       == 0)              continue;
+        if (fabs(dInvEInvP)         >  0.05)           continue;
+        if (!electron.passConversionVeto)              continue;
 
         Float_t effA          = electronEffectiveAreas(fabs(electron.momentum.Eta()));
         Float_t pfCombinedIso = (electron.chargedHadronIso + std::max(double (electron.neutralHadronIso +
@@ -574,6 +582,10 @@ SusyEventAnalyzer::Run()
       ////////// SORT SELECTED ELECTRONS //////////
       std::sort(looseElectrons.begin(), looseElectrons.end(), PtGreater<susy::Electron>);
       std::sort(tightElectrons.begin(), tightElectrons.end(), PtGreater<susy::Electron>);
+
+      // Leading electron must pass higher pT cut
+      if (looseElectrons.size() >= 1 && looseElectrons.at(0)->momentum.Et() < electron1_etCut) looseElectrons.clear();
+      if (tightElectrons.size() >= 1 && tightElectrons.at(0)->momentum.Et() < electron1_etCut) tightElectrons.clear();
 
       ////////// SELECT PHOTONS //////////
       if (printLevel > 1) out << "Find photons in the event" << std::endl;
@@ -739,9 +751,6 @@ SusyEventAnalyzer::Run()
       if (goodPfJets.size() == 6) nCnt[12]++;
       if (goodPfJets.size() == 7) nCnt[13]++;
 
-      // For photon plots
-      if (mediumPhotons.size() == 0) continue;
-
       runNo        = event.runNumber;
       lumiNo       = event.luminosityBlockNumber;
       eventNo      = event.eventNumber;
@@ -755,8 +764,8 @@ SusyEventAnalyzer::Run()
       met_et       = metV.Mod();
       met_phi      = metV.Phi();
 
-      if (signalDatasetName != "")
-        evtWt = SetSignalEventWeight(signalDatasetName, lumiCalc, event.gridParams["pole_squark_m"]);
+      if (datasetName.Contains("stealthT2"))
+        evtWt = SetSignalEventWeight(datasetName, lumiCalc, event.gridParams["pole_squark_m"]);
       else if (nScaledEvents > 0.0)
         evtWt = nScaledEvents / (Float_t)nEntries;
       else

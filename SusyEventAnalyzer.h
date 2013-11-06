@@ -47,12 +47,14 @@ public:
   void SetProcessNEvents(int v) { processNEvents = v; }
   void AddHltName(TString const& v) { hltNames.push_back(v + "_v*"); }
   void CopyEvents(bool v) { copyEvents = v; }
-  void SetSignalDatasetName(TString const& v) { signalDatasetName = v; }
 
   void SetNScaledEvents(Float_t lumi, Float_t xSec) { lumiCalc = lumi; nScaledEvents = lumi * xSec; }
-  void SetJecUncert    (Float_t jec)                { jecSystematic = jec;         }
+  void SetDatasetName  (TString const& v)           { datasetName = v; }
+  void SetCutComplement(TString const& v)           { cutComplement = v; SetObjectCuts(cutComplement); }
+  void SetJecUncert    (Float_t jec)                { jecSystematic = jec; }
 
-  Float_t SetStealthGGXSec    (Float_t);
+  void    SetObjectCuts       (TString);
+  Float_t SetSusyXSec         (Float_t);
   Float_t SetSignalEventWeight(TString, Float_t, Float_t);
 
   void createHistogram(const char*, const char*, const char*, const char*, Int_t, Double_t, Double_t);
@@ -86,14 +88,16 @@ protected:
   mutable std::pair<unsigned, unsigned> currentLumi;
   mutable bool currentLumiIsGood;
 
-  std::map<TString, TH1F*> hName;           // Map for histograms
-  Float_t                  lumiCalc;        // Luminosity used for scaling output
-  Float_t                  nScaledEvents;   // Number of events to be used for scaling output histograms
-  Float_t                  jecSystematic;   // -1.0, 0.0, +1.0 for JEC down, nominal, JEC up
-  TString                  signalDatasetName;
+  std::map<TString, TH1F*> hName;  // Map for histograms
+  Float_t lumiCalc;                // Luminosity used for scaling output
+  Float_t nScaledEvents;           // Number of events to be used for scaling output histograms
+  TString datasetName;
+  TString cutComplement;
+  Float_t jecSystematic;           // -1.0, 0.0, +1.0 for JEC down, nominal, JEC up
 
   // Cut variables
-  Float_t muon_ptCut, electron_etCut, photon1_etCut, photon2_etCut, jet_ptCut, met_etCut;
+  Float_t muon1_ptCut,   muon2_ptCut,   electron1_etCut, electron2_etCut;
+  Float_t photon1_etCut, photon2_etCut, jet_ptCut,       met_etCut;
 
   // Flat ntuple variables
   Int_t   runNo,      lumiNo;
@@ -140,17 +144,20 @@ SusyEventAnalyzer::SusyEventAnalyzer(TTree& tree) :
   currentLumiIsGood(true),
   lumiCalc(1.0),
   nScaledEvents(-1.0),
-  jecSystematic(0.0),
-  signalDatasetName("")
+  datasetName(""),
+  cutComplement(""),
+  jecSystematic(0.0)
 {
   event.setInput(tree);
 
-  muon_ptCut     = 15.0;
-  electron_etCut = 15.0;
-  photon1_etCut  = 40.0;
-  photon2_etCut  = 25.0;
-  jet_ptCut      = 45.0;
-  met_etCut      = 15.0;
+  muon1_ptCut     = 15.0;
+  muon2_ptCut     = 15.0;
+  electron1_etCut = 15.0;
+  electron2_etCut = 15.0;
+  photon1_etCut   = 15.0;
+  photon2_etCut   = 15.0;
+  jet_ptCut       = 30.0;
+  met_etCut       = 15.0;
 }
 
 SusyEventAnalyzer::~SusyEventAnalyzer()
@@ -200,6 +207,25 @@ SusyEventAnalyzer::IncludeAJson(TString const& _fileName)
     }
   }
 }
+
+
+
+void
+SusyEventAnalyzer::SetObjectCuts(TString cuts)
+{
+  if (cuts == "singleMu")
+    muon1_ptCut = 30.0;
+  else if (cuts == "singleElectron")
+    electron1_etCut = 30.0;
+  else if (cuts == "doublePhoton") {
+    photon1_etCut = 40.0;
+    photon2_etCut = 25.0;
+  }
+  else if (cuts == "photonHad")
+    photon1_etCut = 75.0;
+}
+
+
 
 bool
 SusyEventAnalyzer::IsGoodLumi(UInt_t run, UInt_t lumi) const
