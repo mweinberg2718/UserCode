@@ -193,7 +193,7 @@ SusyEventAnalyzer::SetSignalEventWeight(TString dsName, Float_t lumi, Float_t m)
 {
   if (dsName.Contains("stealthT2")) {
     if (dsName.Contains("WW"))
-      return lumi * SetSusyXSec(m) * 1.0 / 20000.0;
+      return lumi * SetSusyXSec(m) * 0.543 / 20000.0;  // Efficiency of WW -> at least 1 lepton (including tau) ~ 54.3% from PDG
 
     return lumi * SetSusyXSec(m) / 20000.0;
   }
